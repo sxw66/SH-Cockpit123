@@ -832,7 +832,9 @@ async fn refresh_payload_for_account_inner(
                     .to_string(),
             );
         }
-        logger::log_warn("[CodeBuddy] 未配置查询配额绑定参数，跳过 user_resource 刷新（请先完成一次配额绑定）");
+        logger::log_warn(
+            "[CodeBuddy] 未配置查询配额绑定参数，跳过 user_resource 刷新（请先完成一次配额绑定）",
+        );
         None
     };
 
@@ -913,12 +915,6 @@ pub async fn refresh_payload_for_account(
     account: &crate::models::codebuddy::CodebuddyAccount,
 ) -> Result<CodebuddyOAuthCompletePayload, String> {
     refresh_payload_for_account_inner(account, false).await
-}
-
-pub async fn refresh_payload_for_account_strict(
-    account: &crate::models::codebuddy::CodebuddyAccount,
-) -> Result<CodebuddyOAuthCompletePayload, String> {
-    refresh_payload_for_account_inner(account, true).await
 }
 
 pub async fn build_payload_from_token(

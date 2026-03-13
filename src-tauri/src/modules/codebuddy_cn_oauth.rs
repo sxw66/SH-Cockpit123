@@ -1839,12 +1839,6 @@ pub async fn refresh_payload_for_account(
     refresh_payload_for_account_inner(account, false).await
 }
 
-pub async fn refresh_payload_for_account_strict(
-    account: &crate::models::codebuddy::CodebuddyAccount,
-) -> Result<CodebuddyOAuthCompletePayload, String> {
-    refresh_payload_for_account_inner(account, true).await
-}
-
 pub async fn build_payload_from_token(
     access_token: &str,
 ) -> Result<CodebuddyOAuthCompletePayload, String> {

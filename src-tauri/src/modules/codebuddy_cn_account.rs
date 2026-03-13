@@ -1164,22 +1164,15 @@ pub fn upsert_account(payload: CodebuddyOAuthCompletePayload) -> Result<Codebudd
     Ok(account)
 }
 
-async fn refresh_account_token_with_mode(
-    account_id: &str,
-    require_user_resource: bool,
-) -> Result<CodebuddyAccount, String> {
+pub async fn refresh_account_token(account_id: &str) -> Result<CodebuddyAccount, String> {
     let started_at = Instant::now();
     let mut account = load_account(account_id).ok_or_else(|| "账号不存在".to_string())?;
     logger::log_info(&format!(
-        "[CodeBuddy Refresh] 开始刷新账号: id={}, email={}, strict_user_resource={}",
-        account.id, account.email, require_user_resource
+        "[CodeBuddy Refresh] 开始刷新账号: id={}, email={}",
+        account.id, account.email
     ));
 
-    let payload = if require_user_resource {
-        codebuddy_cn_oauth::refresh_payload_for_account_strict(&account).await?
-    } else {
-        codebuddy_cn_oauth::refresh_payload_for_account(&account).await?
-    };
+    let payload = codebuddy_cn_oauth::refresh_payload_for_account(&account).await?;
     let tags = account.tags.clone();
     let created_at = account.created_at;
     apply_payload(&mut account, payload);
@@ -1196,14 +1189,6 @@ async fn refresh_account_token_with_mode(
         started_at.elapsed().as_millis()
     ));
     Ok(updated)
-}
-
-pub async fn refresh_account_token(account_id: &str) -> Result<CodebuddyAccount, String> {
-    refresh_account_token_with_mode(account_id, false).await
-}
-
-pub async fn refresh_account_token_strict(account_id: &str) -> Result<CodebuddyAccount, String> {
-    refresh_account_token_with_mode(account_id, true).await
 }
 
 pub async fn refresh_all_tokens() -> Result<Vec<(String, Result<CodebuddyAccount, String>)>, String>
@@ -1757,10 +1742,9 @@ pub fn export_accounts(account_ids: &[String]) -> Result<String, String> {
 }
 
 pub fn get_default_codebuddy_cn_data_dir() -> Option<PathBuf> {
-    let home = dirs::home_dir()?;
-
     #[cfg(target_os = "macos")]
     {
+        let home = dirs::home_dir()?;
         Some(home.join("Library/Application Support/CodeBuddy CN"))
     }
 
@@ -2043,15 +2027,6 @@ pub fn import_payload_from_local() -> Result<Option<CodebuddyOAuthCompletePayloa
 
     let payload = build_local_import_payload(access_token, parsed_json, uid_from_token);
     Ok(Some(payload))
-}
-
-pub fn import_from_local() -> Result<Option<CodebuddyAccount>, String> {
-    let payload = match import_payload_from_local()? {
-        Some(payload) => payload,
-        None => return Ok(None),
-    };
-    let account = upsert_account(payload)?;
-    Ok(Some(account))
 }
 
 pub fn run_quota_alert_if_needed() -> Result<(), String> {
