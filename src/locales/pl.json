@@ -589,8 +589,10 @@
     },
     "tier": {
       "pro": "PRO",
-      "ultra": "ULTRA",
-      "free": "FREE"
+      "ultra": "ULTRA"
+    },
+    "credits": {
+      "label": "Kredyty AI"
     },
     "empty": {
       "title": "Brak kont",
@@ -610,8 +612,7 @@
     "filter": {
       "all": "Wszystkie ({{count}})",
       "pro": "PRO (__MASKA_0__)",
-      "ultra": "ULTRA (__MASKA_0__)",
-      "free": "GRATIS (__MASKA_0__)"
+      "ultra": "ULTRA (__MASKA_0__)"
     },
     "sortLabel": "Sortuj",
     "sort": {

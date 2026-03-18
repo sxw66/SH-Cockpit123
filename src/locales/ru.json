@@ -589,8 +589,10 @@
     },
     "tier": {
       "pro": "PRO",
-      "ultra": "ULTRA",
-      "free": "FREE"
+      "ultra": "ULTRA"
+    },
+    "credits": {
+      "label": "Кредиты ИИ"
     },
     "empty": {
       "title": "Нет аккаунтов",
@@ -610,8 +612,7 @@
     "filter": {
       "all": "Все ({{count}})",
       "pro": "ПРО ({{count}})",
-      "ultra": "УЛЬТРА ({{count}})",
-      "free": "БЕСПЛАТНО ({{count}})"
+      "ultra": "УЛЬТРА ({{count}})"
     },
     "sortLabel": "Сортировка",
     "sort": {
