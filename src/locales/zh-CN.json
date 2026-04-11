@@ -772,6 +772,9 @@
     "saveSettings": "保存设置"
   },
   "appPath": {
+    "modal": {
+      "desc": "未找到 {{app}} 应用程序路径，请立即设置后继续。"
+    },
     "missing": {
       "title": "未找到应用程序路径",
       "desc": "未找到 {{app}} 应用程序路径，请立即设置后继续启动。",
@@ -1727,6 +1730,9 @@
     },
     "usage": {
       "open": "查看 OpenAI 用量",
+      "search": {
+        "placeholder": "搜索账号..."
+      },
       "hint": "API Key 额度请在 OpenAI Usage 页面查看。",
       "openFailed": "打开用量页面失败: {{error}}"
     },
