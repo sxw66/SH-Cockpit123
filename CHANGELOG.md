@@ -12,8 +12,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Added
 - **APIKEY.FUN now has a fuller key workspace**: saved keys can retain the last queried balance, automatically reload the first saved key when the page opens, show usage details, read the current key's available model list, and prefill Codex provider setup without directly creating the target account.
 - **Codex session management now supports targeted session copy and recovery workflows**: selected sessions can be copied to a target instance, moved to the trash, restored later, selected across all projects, and inspected with copied session IDs while target instance choices follow the same order as the instance list.
-- **Codex account export now supports preview-first workflows**: exports can be previewed, copied, and downloaded, including multi-document formats such as sub2api and cpa.
-- **Remote platform visibility can now hide unfinished entries safely**: remote configuration can remove platform entries from navigation, dashboards, platform switchers, and floating cards while preserving local accounts, login state, and backend data.
 
 ### Changed
 - **Gemini quota display now uses quota-summary buckets**: Gemini quota refresh reads `retrieveUserQuotaSummary` so account pages, dashboard cards, tray items, and native menus can show Gemini and third-party 5-hour and weekly quota windows more consistently. Thanks @xdd666t.
