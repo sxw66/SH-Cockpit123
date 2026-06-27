@@ -94,6 +94,16 @@
   border-radius: 12px;
 }
 
+.codex-overview-selection-actions .codex-overview-full-quota-wakeup-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 0 12px;
+  border-radius: 12px;
+  white-space: nowrap;
+}
+
 .codex-overview-selection-actions .codex-overview-clear-error-btn {
   background: #ef4444;
   border-color: rgba(239, 68, 68, 0.42);

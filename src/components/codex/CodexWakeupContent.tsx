@@ -81,10 +81,17 @@ interface CodexWakeupGeneralConfig {
   codex_launch_on_switch?: boolean;
 }
 
+export interface CodexWakeupTestOpenRequest {
+  signal: number;
+  accountIds: string[];
+  notice?: string;
+}
+
 interface CodexWakeupContentProps {
   accounts: CodexAccount[];
   onRefreshAccounts: () => Promise<void>;
   openPresetManagerSignal?: number;
+  openTestRequest?: CodexWakeupTestOpenRequest | null;
 }
 
 interface TaskDraft {
@@ -839,6 +846,7 @@ export function CodexWakeupContent({
   accounts,
   onRefreshAccounts,
   openPresetManagerSignal = 0,
+  openTestRequest = null,
 }: CodexWakeupContentProps) {
   const { t } = useTranslation();
   const {
@@ -1021,6 +1029,7 @@ export function CodexWakeupContent({
   const [testAccountFilters, setTestAccountFilters] = useState<AccountPickerFilters>(createEmptyAccountPickerFilters());
   const activeTestRunTokenRef = useRef(0);
   const activeTestScopeIdRef = useRef<string | null>(null);
+  const handledOpenTestRequestSignalRef = useRef<number | null>(null);
   const [executionSession, setExecutionSession] = useState<ExecutionSessionState | null>(null);
   const [executionSessionFromHistory, setExecutionSessionFromHistory] = useState(false);
   const [executionFilter, setExecutionFilter] = useState<ExecutionRecordFilter>('all');
@@ -1980,6 +1989,31 @@ export function CodexWakeupContent({
     setTestModelReasoningEffort(resolvedModelSelection.modelReasoningEffort);
     setShowTestModal(true);
   }, [resolvedModelSelection]);
+
+  useEffect(() => {
+    if (!openTestRequest) return;
+    if (handledOpenTestRequestSignalRef.current === openTestRequest.signal) {
+      return;
+    }
+
+    handledOpenTestRequestSignalRef.current = openTestRequest.signal;
+    const oauthAccountIdSet = new Set(oauthAccounts.map((account) => account.id));
+    const nextAccountIds = Array.from(new Set(openTestRequest.accountIds)).filter((accountId) =>
+      oauthAccountIdSet.has(accountId),
+    );
+
+    setTestModalError(null);
+    setTestAccountFilters(createEmptyAccountPickerFilters());
+    setTestAccountIds(nextAccountIds);
+    setTestModelPresetId(resolvedModelSelection.modelPresetId);
+    setTestModel(resolvedModelSelection.model);
+    setTestModelReasoningEffort(resolvedModelSelection.modelReasoningEffort);
+    setShowTestModal(true);
+
+    if (openTestRequest.notice) {
+      setNotice({ tone: 'success', text: openTestRequest.notice });
+    }
+  }, [oauthAccounts, openTestRequest, resolvedModelSelection, setTestModalError]);
 
   const closeTaskModal = useCallback(() => {
     setShowTaskModal(false);

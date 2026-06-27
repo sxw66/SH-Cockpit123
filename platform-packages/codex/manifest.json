@@ -1,7 +1,7 @@
 {
   "id": "codex",
   "platformId": "codex",
-  "version": "0.26.7",
+  "version": "0.26.8",
   "apiVersion": 1,
   "minCoreVersion": "0.26.5",
   "displayName": "Codex",
@@ -32,6 +32,28 @@
     "cli"
   ],
   "changelog": [
+    {
+      "version": "0.26.8",
+      "date": "2026-06-27",
+      "notes": [
+        "Adds the full-quota wakeup selection flow in the Codex account overview: accounts are checked in list order and eligible accounts are preselected for the existing wakeup test dialog.",
+        "Codex platform package update testing now uses the test platform package index by default during local dev desktop runs."
+      ],
+      "locales": {
+        "zh-CN": {
+          "notes": [
+            "Codex 账号总览新增“唤醒满额账号”：按列表顺序逐个检测账号配额，符合条件的账号会自动勾选并进入现有测试唤醒弹框。",
+            "本地 dev 桌面端默认使用测试平台包索引，便于验证 Codex 平台包远端更新流程。"
+          ]
+        },
+        "zh-TW": {
+          "notes": [
+            "Codex 帳號總覽新增「喚醒滿額帳號」：依列表順序逐一檢測帳號額度，符合條件的帳號會自動勾選並進入既有測試喚醒彈框。",
+            "本機 dev 桌面端預設使用測試平台包索引，方便驗證 Codex 平台包遠端更新流程。"
+          ]
+        }
+      }
+    },
     {
       "version": "0.26.7",
       "date": "2026-06-23",
