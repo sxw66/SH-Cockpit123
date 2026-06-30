@@ -218,6 +218,10 @@ const ANTIGRAVITY_FILTER_FIELD_TAG_FILTER = 'tag_filter'
 const ANTIGRAVITY_FILTER_FIELD_GROUP_BY_TAG = 'group_by_tag'
 const ANTIGRAVITY_FILTER_FIELD_ACTIVE_GROUP_ID = 'active_group_id'
 
+// 云端默认的筛选数据源
+const CLOUD_DEFAULT_FILTER_TYPES: AccountsFilterType[] = ['PRO']
+const CLOUD_DEFAULT_TAG_FILTER: string[] = []
+
 export function AccountsPage({ onNavigate, hideHeader = false }: AccountsPageProps) {
   const { t, i18n } = useTranslation()
   const antigravityRuntimeTarget = useAntigravityRuntimeTarget()
@@ -337,22 +341,30 @@ export function AccountsPage({ onNavigate, hideHeader = false }: AccountsPagePro
 
   // 筛选
   const [searchQuery, setSearchQuery] = useState('')
-  const [filterTypes, setFilterTypes] = useState<AccountsFilterType[]>(() =>
-    initialFilterPersistenceEnabled
-      ? (readAccountsOverviewFilterStringArray(
-          ANTIGRAVITY_FILTER_PERSISTENCE_SCOPE,
-          ANTIGRAVITY_FILTER_FIELD_FILTER_TYPES,
-        ) as AccountsFilterType[])
-      : [],
-  )
-  const [tagFilter, setTagFilter] = useState<string[]>(() =>
-    initialFilterPersistenceEnabled
-      ? readAccountsOverviewFilterStringArray(
-          ANTIGRAVITY_FILTER_PERSISTENCE_SCOPE,
-          ANTIGRAVITY_FILTER_FIELD_TAG_FILTER,
-        )
-      : [],
-  )
+  const [filterTypes, setFilterTypes] = useState<AccountsFilterType[]>(() => {
+    if (initialFilterPersistenceEnabled) {
+      const local = readAccountsOverviewFilterStringArray(
+        ANTIGRAVITY_FILTER_PERSISTENCE_SCOPE,
+        ANTIGRAVITY_FILTER_FIELD_FILTER_TYPES,
+      ) as AccountsFilterType[]
+      if (local.length > 0) {
+        return local
+      }
+    }
+    return CLOUD_DEFAULT_FILTER_TYPES
+  })
+  const [tagFilter, setTagFilter] = useState<string[]>(() => {
+    if (initialFilterPersistenceEnabled) {
+      const local = readAccountsOverviewFilterStringArray(
+        ANTIGRAVITY_FILTER_PERSISTENCE_SCOPE,
+        ANTIGRAVITY_FILTER_FIELD_TAG_FILTER,
+      )
+      if (local.length > 0) {
+        return local
+      }
+    }
+    return CLOUD_DEFAULT_TAG_FILTER
+  })
   const [groupByTag, setGroupByTag] = useState<boolean>(() =>
     initialFilterPersistenceEnabled
       ? Boolean(
@@ -657,19 +669,17 @@ export function AccountsPage({ onNavigate, hideHeader = false }: AccountsPagePro
         setViewMode(savedViewMode)
       }
 
-      setFilterTypes(
-        readAccountsOverviewFilterStringArray(
-          ANTIGRAVITY_FILTER_PERSISTENCE_SCOPE,
-          ANTIGRAVITY_FILTER_FIELD_FILTER_TYPES,
-        ) as AccountsFilterType[]
-      )
+      const localFilterTypes = readAccountsOverviewFilterStringArray(
+        ANTIGRAVITY_FILTER_PERSISTENCE_SCOPE,
+        ANTIGRAVITY_FILTER_FIELD_FILTER_TYPES,
+      ) as AccountsFilterType[]
+      setFilterTypes(localFilterTypes.length > 0 ? localFilterTypes : CLOUD_DEFAULT_FILTER_TYPES)
 
-      setTagFilter(
-        readAccountsOverviewFilterStringArray(
-          ANTIGRAVITY_FILTER_PERSISTENCE_SCOPE,
-          ANTIGRAVITY_FILTER_FIELD_TAG_FILTER,
-        )
+      const localTagFilter = readAccountsOverviewFilterStringArray(
+        ANTIGRAVITY_FILTER_PERSISTENCE_SCOPE,
+        ANTIGRAVITY_FILTER_FIELD_TAG_FILTER,
       )
+      setTagFilter(localTagFilter.length > 0 ? localTagFilter : CLOUD_DEFAULT_TAG_FILTER)
 
       setGroupByTag(
         Boolean(
