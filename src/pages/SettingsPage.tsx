@@ -79,11 +79,12 @@ import { useEscClose } from '../hooks/useEscClose';
 import './settings/Settings.css';
 import { 
   Github, User, Rocket, Save, FolderOpen,
-  AlertCircle, RefreshCw, Heart, MessageSquare, FileText, Download, X
+  AlertCircle, RefreshCw, Heart, MessageSquare, FileText, Download, X, ShoppingBag, ExternalLink
 } from 'lucide-react';
+import qqQrCode from '../assets/images/author-qq-qrcode.png';
 
-
-
+const AUTHOR_SHOP_URL = 'https://pay.qxvx.cn/shop/SJQ3EKW3';
+const AUTHOR_QQ_NUMBER = '1748931836';
 /** 网络配置类型 */
 interface NetworkConfig {
   ws_enabled: boolean;
@@ -6269,6 +6270,30 @@ export function SettingsPage() {
                 <div className="credit-icon" style={{ color: '#3b82f6' }}><MessageSquare size={24} /></div>
                 <h3>{t('settings.about.feedback', '意见反馈')}</h3>
                 <p>{t('settings.about.feedbackDesc', 'Issues')}</p>
+              </button>
+            </div>
+
+            <div className="author-contact-panel">
+              <div className="author-contact-qr-wrap">
+                <img
+                  src={qqQrCode}
+                  alt={`QQ 二维码 ${AUTHOR_QQ_NUMBER}`}
+                  className="author-contact-qr"
+                />
+                <div className="author-contact-meta">
+                  <h3>{t('settings.about.contactAuthor', '联系作者')}</h3>
+                  <p>{t('settings.about.qqHint', '扫一扫，加我为好友')}</p>
+                  <p className="author-contact-qq">QQ：{AUTHOR_QQ_NUMBER}</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                className="author-contact-shop-btn"
+                onClick={() => openLink(AUTHOR_SHOP_URL)}
+              >
+                <ShoppingBag size={16} />
+                <span>{t('settings.about.shopLink', '官方卡网 · 点击进入选购')}</span>
+                <ExternalLink size={14} />
               </button>
             </div>
           </div>
