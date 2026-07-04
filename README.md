@@ -24,6 +24,10 @@
 
 ## 卡网商店
 
+<a href="https://pay.qxvx.cn/shop/SJQ3EKW3">
+  <img src="docs/images/card-shop-banner.png" alt="CockpitV2 Tools 卡网商店" width="720" />
+</a>
+
 前往 [卡网商店](https://pay.qxvx.cn/shop/SJQ3EKW3) 购买或了解更多。
 
 ---
@@ -389,7 +393,11 @@ npm run tauri build
 
 ## ☕ 赞助项目
 
-如果不介意，请 [☕ 赞赏支持一下](docs/DONATE.md)
+如果不介意，欢迎扫码赞赏支持项目持续开发与维护：
+
+<p align="center">
+  <img src="docs/images/alipay.png" alt="支付宝收款码" width="280" />
+</p>
 
 您的每一份支持都是对开源项目最大的鼓励！无论金额大小，都代表着您对这个项目的认可。
 
