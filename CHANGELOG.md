@@ -7,6 +7,17 @@ All notable changes to Cockpit Tools will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
+## [1.0.5] - 2026-07-04
+
+### Fixed
+
+- **Release builds no longer fail when Tauri signing secrets are absent**: the release workflow now detects a missing `TAURI_SIGNING_PRIVATE_KEY` and builds without updater signing instead of aborting on every platform.
+
+### Notes
+
+- This build is produced without updater signing, so it does not ship in-app auto-update artifacts.
+
+---
 ## [1.0.4] - 2026-07-04
 
 ### Important Notice
