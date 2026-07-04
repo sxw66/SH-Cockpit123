@@ -372,8 +372,15 @@ jobs:
     needs:
       - release
       - upload-checksums
+      - publish-release
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/v') && needs.release.result == 'success'
+    # Must run after publish-release: draft release assets are not reachable
+    # via the public releases/download URL used below.
+    if: >-
+      !cancelled() &&
+      startsWith(github.ref, 'refs/tags/v') &&
+      needs.release.result == 'success' &&
+      needs.publish-release.result == 'success'
     permissions:
       contents: write
       pull-requests: write
@@ -467,6 +474,7 @@ jobs:
       - rebuild-latest-json
     runs-on: ubuntu-latest
     if: >-
+      !cancelled() &&
       startsWith(github.ref, 'refs/tags/v') &&
       needs.release.result == 'success' &&
       (needs.signing-preflight.outputs.has_signing != 'true' || needs.rebuild-latest-json.result == 'success')
