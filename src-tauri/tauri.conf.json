@@ -4,7 +4,7 @@
   "version": "1.0.4",
   "identifier": "com.sxw66.cockpit-tools",
   "build": {
-    "beforeDevCommand": "node scripts/prepare-tauri.cjs && npm run dev",
+    "beforeDevCommand": "node scripts/prepare-tauri.cjs && node ./node_modules/vite/bin/vite.js",
     "devUrl": "http://localhost:1420",
     "beforeBuildCommand": "node scripts/prepare-tauri.cjs && npm run build",
     "frontendDist": "../dist"

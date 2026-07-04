@@ -1,11 +1,12 @@
-const { spawnSync } = require('node:child_process');
+const { spawn, spawnSync } = require('node:child_process');
 const fs = require('node:fs');
-const os = require('node:os');
 const path = require('node:path');
 
 const repoRoot = path.resolve(__dirname, '..');
 const extraArgs = process.argv.slice(2);
 const tauriArgs = ['dev', '--config', 'src-tauri/tauri.dev.conf.json', ...extraArgs];
+const tauriCliJs = path.join(repoRoot, 'node_modules', '@tauri-apps', 'cli', 'tauri.js');
+const viteEntry = path.join(repoRoot, 'node_modules', 'vite', 'bin', 'vite.js');
 
 const env = {
   ...process.env,
@@ -13,6 +14,14 @@ const env = {
   COCKPIT_TOOLS_API_PORT: process.env.COCKPIT_TOOLS_API_PORT || '1456',
   VITE_COCKPIT_TOOLS_PROFILE: process.env.VITE_COCKPIT_TOOLS_PROFILE || 'dev',
 };
+
+let viteProcess = null;
+
+function prependPath(entries) {
+  const current = (env.PATH || '').split(';').filter(Boolean);
+  const merged = [...entries, ...current.filter((entry) => !entries.includes(entry))];
+  env.PATH = merged.join(';');
+}
 
 function run(command, args, options = {}) {
   const result = spawnSync(command, args, {
@@ -62,76 +71,106 @@ function ensureCargoAvailable() {
     });
     if (result.status === 0) {
       if (fs.existsSync(cargoExe)) {
-        const pathEntries = (env.PATH || '').split(';').filter(Boolean);
-        const normalizedCargoBin = cargoBinDir.toLowerCase();
-        const hasCargoBin = pathEntries.some((entry) => entry.toLowerCase() === normalizedCargoBin);
-        if (!hasCargoBin) {
-          env.PATH = `${cargoBinDir};${env.PATH || ''}`;
-        }
+        prependPath([cargoBinDir]);
       }
       return;
     }
   }
 
   console.error('\n[cockpit-tools] 未检测到 Rust/Cargo，无法启动 Tauri 开发模式。');
-  console.error('[cockpit-tools] Windows 开发环境需要以下依赖：');
-  console.error('  1. Node.js 18+，并在项目目录执行 npm install');
-  console.error('  2. Rust 工具链：https://rustup.rs/  （或 winget install Rustlang.Rustup）');
-  console.error('  3. Visual Studio Build Tools，勾选「使用 C++ 的桌面开发」');
-  console.error('  4. Go 语言（sidecar 编译需要）：https://go.dev/dl/');
-  console.error('[cockpit-tools] 安装完成后请重新打开终端，再执行：npm run tauri:dev\n');
+  console.error('[cockpit-tools] 我已尝试自动安装 Rust；若仍失败，请关闭并重新打开 Cursor/终端后再试。');
+  console.error('[cockpit-tools] 也可手动安装：');
+  console.error('  winget install Rustlang.Rustup');
+  console.error('  winget install Microsoft.VisualStudio.2022.BuildTools');
+  console.error('[cockpit-tools] 然后执行：npm run tauri:dev\n');
   process.exit(1);
 }
 
-function runDevDirect() {
-  run('npm.cmd', ['run', 'sync-version'], { shell: process.platform === 'win32' });
-  runFinal('npx.cmd', ['tauri', ...tauriArgs], { shell: process.platform === 'win32' });
+function runSyncVersion() {
+  run(process.execPath, [path.join(repoRoot, 'scripts', 'sync-version.js')]);
 }
 
-ensureCargoAvailable();
-
-if (process.platform !== 'win32') {
-  run('npm', ['run', 'sync-version']);
-  runFinal('npx', ['tauri', ...tauriArgs]);
+function runPrepareTauri() {
+  run(process.execPath, [path.join(repoRoot, 'scripts', 'prepare-tauri.cjs')]);
 }
 
-const vcvars64Path = 'C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Auxiliary\\Build\\vcvars64.bat';
-const goBinPath = 'C:\\Program Files\\Go\\bin';
-
-if (!fs.existsSync(vcvars64Path)) {
-  console.warn('[cockpit-tools] 未找到 vcvars64.bat，将使用当前 shell 环境继续。');
-  runDevDirect();
-}
-
-const tempScriptPath = path.join(os.tmpdir(), `cockpit-tools-tauri-dev-${process.pid}.cmd`);
-const tauriCliPath = path.join(repoRoot, 'node_modules', '.bin', 'tauri.cmd');
-
-if (!fs.existsSync(tauriCliPath)) {
-  console.warn('[cockpit-tools] 未找到本地 tauri CLI，将回退到 npx tauri。');
-  runDevDirect();
-}
-
-const quotedArgs = tauriArgs.map((arg) => {
-  if (/[\s"]/u.test(arg)) {
-    return `"${arg.replace(/"/g, '""')}"`;
+function stopVite() {
+  if (viteProcess && !viteProcess.killed) {
+    try {
+      viteProcess.kill();
+    } catch {
+      // ignore cleanup errors
+    }
   }
-  return arg;
+}
+
+function waitForDevServer(timeoutMs = 15000) {
+  const start = Date.now();
+  while (Date.now() - start < timeoutMs) {
+    const result = spawnSync(
+      process.execPath,
+      ['-e', "fetch('http://127.0.0.1:1420').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"],
+      { cwd: repoRoot, stdio: 'ignore', env },
+    );
+    if (result.status === 0) {
+      return;
+    }
+    spawnSync('powershell.exe', ['-Command', 'Start-Sleep -Milliseconds 400'], {
+      stdio: 'ignore',
+    });
+  }
+  console.warn('[cockpit-tools] Vite 启动较慢，继续尝试连接 Tauri...');
+}
+
+function startViteDevServer() {
+  runPrepareTauri();
+  viteProcess = spawn(process.execPath, [viteEntry], {
+    cwd: repoRoot,
+    env,
+    stdio: 'inherit',
+    shell: false,
+  });
+
+  viteProcess.on('exit', (code, signal) => {
+    if (signal) {
+      process.kill(process.pid, signal);
+      return;
+    }
+    if (typeof code === 'number' && code !== 0) {
+      process.exit(code);
+    }
+  });
+
+  waitForDevServer();
+}
+
+function runTauriDevFinal(options = {}) {
+  if (fs.existsSync(tauriCliJs)) {
+    runFinal(process.execPath, [tauriCliJs, ...tauriArgs], options);
+  }
+
+  if (process.platform === 'win32') {
+    runFinal('npx.cmd', ['tauri', ...tauriArgs], { shell: true, ...options });
+  }
+
+  runFinal('npx', ['tauri', ...tauriArgs], options);
+}
+
+process.on('exit', stopVite);
+process.on('SIGINT', () => {
+  stopVite();
+  process.exit(130);
+});
+process.on('SIGTERM', () => {
+  stopVite();
+  process.exit(143);
 });
 
-const scriptBody = [
-  '@echo off',
-  `set "PATH=${goBinPath};%PATH%"`,
-  `call "${vcvars64Path}"`,
-  'if errorlevel 1 exit /b %errorlevel%',
-  'call npm.cmd run sync-version',
-  'if errorlevel 1 exit /b %errorlevel%',
-  `call "${tauriCliPath}" ${quotedArgs.join(' ')}`.trim(),
-].join('\r\n');
-
-fs.writeFileSync(tempScriptPath, scriptBody);
-
-try {
-  runFinal('cmd.exe', ['/d', '/c', tempScriptPath]);
-} finally {
-  fs.rmSync(tempScriptPath, { force: true });
-}
+ensureCargoAvailable();
+prependPath([
+  path.dirname(process.execPath),
+  'C:\\Program Files\\Go\\bin',
+]);
+runSyncVersion();
+startViteDevServer();
+runTauriDevFinal();

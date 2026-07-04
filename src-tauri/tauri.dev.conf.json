@@ -2,6 +2,10 @@
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "Cockpit Tools Dev",
   "identifier": "com.sxw66.cockpit-tools.dev",
+  "build": {
+    "beforeDevCommand": "cd .",
+    "devUrl": "http://localhost:1420"
+  },
   "app": {
     "windows": [
       {
