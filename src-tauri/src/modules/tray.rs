@@ -23,6 +23,9 @@ use crate::modules::logger;
 /// 托盘菜单 ID
 pub const TRAY_ID: &str = "main-tray";
 
+/// 应用在托盘、任务栏和窗口标题中显示的名称
+pub const APP_DISPLAY_NAME: &str = "CockpitV2 Tools";
+
 #[cfg(target_os = "macos")]
 const MACOS_STATUS_ITEM_AUTOSAVE_NAME: &str = "com.sxw66.cockpit-tools.main-tray";
 
@@ -409,7 +412,7 @@ pub fn create_tray_skeleton<R: Runtime>(
     let builder = TrayIconBuilder::with_id(TRAY_ID)
         .icon(tray_icon)
         .show_menu_on_left_click(false)
-        .tooltip("Cockpit Tools")
+        .tooltip(APP_DISPLAY_NAME)
         .on_menu_event(handle_menu_event)
         .on_tray_icon_event(handle_tray_event);
 
