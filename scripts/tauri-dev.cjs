@@ -49,10 +49,9 @@ function runFinal(command, args, options = {}) {
 }
 
 function ensureCargoAvailable() {
-  const cargoCandidates = [
-    'cargo',
-    path.join(process.env.USERPROFILE || '', '.cargo', 'bin', 'cargo.exe'),
-  ].filter(Boolean);
+  const cargoBinDir = path.join(process.env.USERPROFILE || '', '.cargo', 'bin');
+  const cargoExe = path.join(cargoBinDir, 'cargo.exe');
+  const cargoCandidates = ['cargo', cargoExe].filter(Boolean);
 
   for (const candidate of cargoCandidates) {
     const result = spawnSync(candidate, ['--version'], {
@@ -62,6 +61,14 @@ function ensureCargoAvailable() {
       env,
     });
     if (result.status === 0) {
+      if (fs.existsSync(cargoExe)) {
+        const pathEntries = (env.PATH || '').split(';').filter(Boolean);
+        const normalizedCargoBin = cargoBinDir.toLowerCase();
+        const hasCargoBin = pathEntries.some((entry) => entry.toLowerCase() === normalizedCargoBin);
+        if (!hasCargoBin) {
+          env.PATH = `${cargoBinDir};${env.PATH || ''}`;
+        }
+      }
       return;
     }
   }
@@ -69,10 +76,10 @@ function ensureCargoAvailable() {
   console.error('\n[cockpit-tools] 未检测到 Rust/Cargo，无法启动 Tauri 开发模式。');
   console.error('[cockpit-tools] Windows 开发环境需要以下依赖：');
   console.error('  1. Node.js 18+，并在项目目录执行 npm install');
-  console.error('  2. Rust 工具链：https://rustup.rs/');
+  console.error('  2. Rust 工具链：https://rustup.rs/  （或 winget install Rustlang.Rustup）');
   console.error('  3. Visual Studio Build Tools，勾选「使用 C++ 的桌面开发」');
   console.error('  4. Go 语言（sidecar 编译需要）：https://go.dev/dl/');
-  console.error('[cockpit-tools] 全部安装完成后请重新打开终端，再执行：npm run tauri:dev\n');
+  console.error('[cockpit-tools] 安装完成后请重新打开终端，再执行：npm run tauri:dev\n');
   process.exit(1);
 }
 
