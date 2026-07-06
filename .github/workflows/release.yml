@@ -472,11 +472,15 @@ jobs:
       - signing-preflight
       - release
       - rebuild-latest-json
+      # Publishing makes the release immutable, so every asset (checksums
+      # included) must be uploaded before this job runs.
+      - upload-checksums
     runs-on: ubuntu-latest
     if: >-
       !cancelled() &&
       startsWith(github.ref, 'refs/tags/v') &&
       needs.release.result == 'success' &&
+      needs.upload-checksums.result == 'success' &&
       (needs.signing-preflight.outputs.has_signing != 'true' || needs.rebuild-latest-json.result == 'success')
     permissions:
       contents: write
