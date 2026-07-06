@@ -7,6 +7,17 @@ All notable changes to Cockpit Tools will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
+## [1.0.7] - 2026-07-06
+
+### Added
+
+- **In-app auto-update is now enabled**: release artifacts are signed and a `latest.json` update feed is published. Starting with this version, the app shows an update prompt when a new release is available, and background silent auto-update can be enabled in Settings > General.
+
+### Notes
+
+- **Users on v1.0.6 or earlier need to download and install this version manually once**: the updater verification public key baked into older builds has been replaced, so they cannot auto-upgrade to this release. After installing v1.0.7, all future versions update in-app.
+
+---
 ## [1.0.6] - 2026-07-06
 
 ### Added

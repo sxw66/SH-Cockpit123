@@ -1,7 +1,7 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "CockpitV2 Tools",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "identifier": "com.sxw66.cockpit-tools",
   "build": {
     "beforeDevCommand": "node scripts/prepare-tauri.cjs && node ./node_modules/vite/bin/vite.js",
@@ -95,7 +95,7 @@
       }
     },
     "updater": {
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEMxRkU1RTdBRDdCRUUzM0QKUldROTQ3N1hlbDcrd1ZVQ2E3b1ZoVUdXL3BWQmpjdzNnWllNUW1LNHVwcE9wdGI1Q1UxQmdnQ0oK",
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDIwODI0QjhBNUNEODIyRDcKUldUWEl0aGNpa3VDSUVrMFlLOGtSTktLZ29OZVBxb1JzTkllK0xQRWNoSWhiOEFEUzhDWmcwTFMK",
       "endpoints": [
         "https://github.com/sxw66/SH-Cockpit123/releases/latest/download/latest.json"
       ]
