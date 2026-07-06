@@ -1,6 +1,6 @@
 cask "cockpit-tools" do
-  version "1.0.6"
-  sha256 "fedb745f228d6e9ef40d7d29e83b126c7b1c19bfe718faa68f4993401c01d3ce"
+  version "1.0.7"
+  sha256 "89491c3f1c053af655aa0be853fe69648c29b9898057c874a313b6b97fa9768e"
 
   url "https://github.com/sxw66/SH-Cockpit123/releases/download/v#{version}/CockpitV2.Tools_#{version}_universal.dmg",
       verified: "github.com/sxw66/SH-Cockpit123/"
