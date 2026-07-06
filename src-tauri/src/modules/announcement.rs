@@ -1125,17 +1125,10 @@ pub async fn get_top_right_ad_state() -> Result<TopRightAdState, String> {
 }
 
 pub async fn get_sponsor_module_state() -> Result<SponsorModuleState, String> {
-    let current_version = env!("CARGO_PKG_VERSION");
-    let locale = config::get_user_config().language.to_lowercase();
-    let raw_payload = load_announcements_raw().await?;
-    if !raw_payload.api_relay_enabled {
-        return Ok(SponsorModuleState {
-            sponsor_module: None,
-        });
-    }
-    let sponsor_module =
-        filter_sponsor_module(raw_payload.sponsor_module, current_version, &locale);
-    Ok(SponsorModuleState { sponsor_module })
+    // 中转站/赞助模块在本分支永久停用：无论远端公告如何配置都不展示。
+    Ok(SponsorModuleState {
+        sponsor_module: None,
+    })
 }
 
 pub async fn force_refresh_sponsor_module() -> Result<SponsorModuleState, String> {
