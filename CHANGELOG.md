@@ -7,6 +7,41 @@ All notable changes to Cockpit Tools will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
+## [1.0.6] - 2026-07-06
+
+### Added
+
+- **Codex accounts can be filtered by real plan tiers such as `K12`**, making it easier to find and clean up these accounts.
+- **Codex sessions support export and import**: review the session list, total size, and save location before exporting, import into a target instance, and track progress in a minimizable dialog.
+- **One-click wakeup test on the Codex account overview**: quickly pick OAuth accounts and run a wakeup test.
+- **Codex API service adds pin-first-account routing**: requests can be pinned to the first account in the pool.
+- **Codex request logs support cost re-estimation** based on current model pricing.
+- **Codex session visibility repair supports preview**: inspect the affected scope before applying the fix.
+- **Codex sessions gain trash management**: view trash size, restore sessions, or permanently delete them one by one, in batches, or all at once.
+- **Codex account notes add an email copy shortcut**: the notes dialog shows the account email for easier login and verification.
+
+### Changed
+
+- **Improved background performance**: lower request, refresh, and UI pressure with large account fleets.
+- **Improved Codex batch import and batch delete**: resumable processing, background progress, and failure retry.
+- **Improved the 2FA picker in Codex account notes**: the dropdown now clearly shows key names, notes, codes, and short secrets.
+- **Unified batch selection across platform account pages**: Cursor, Gemini, GitHub Copilot, Kiro, Qoder, Trae, Windsurf, Zed, and the CodeBuddy family now share consistent batch operations.
+
+### Removed
+
+- **Removed the relay-station (APIKEY.FUN) feature**: the sidebar and dashboard relay entries, the dedicated relay page data source, the top relay promo slot, and the APIKEY.FUN entries in the Claude provider presets are all gone; the default provider is now Anthropic Official.
+
+### Fixed
+
+- **Fixed list and delete errors when the Codex account index contained stale records.**
+- **Fixed Codex config saves potentially overwriting existing fields.**
+- **Fixed Codex token refresh and API service 401 retry issues.**
+- **Fixed potentially incorrect Codex session list ordering.**
+- **Fixed app update restarts being blocked by API service shutdown failures.**
+- **Improved stability of multi-platform account switching, launch paths, and current-account read-back.**
+- **Improved Cursor and Zed error messages**: authorization failures and 401 issues are easier to diagnose.
+
+---
 ## [1.0.5] - 2026-07-04
 
 ### Fixed

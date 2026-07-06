@@ -1,6 +1,6 @@
 [package]
 name = "cockpit-tools"
-version = "1.0.5"
+version = "1.0.6"
 description = "Cockpit Tools"
 authors = ["sxw66"]
 license = "CC-BY-NC-SA-4.0"
