@@ -132,6 +132,7 @@ interface GeneralConfig {
   startup_minimized?: boolean;
   floating_card_always_on_top?: boolean;
   app_auto_launch_enabled?: boolean;
+  token_keeper_enabled?: boolean;
   opencode_app_path: string;
   antigravity_app_path: string;
   codex_app_path: string;
@@ -408,6 +409,7 @@ export function SettingsPage() {
   const [startupMinimized, setStartupMinimized] = useState(false);
   const [floatingCardAlwaysOnTop, setFloatingCardAlwaysOnTop] = useState(false);
   const [appAutoLaunchEnabled, setAppAutoLaunchEnabled] = useState(false);
+  const [tokenKeeperEnabled, setTokenKeeperEnabled] = useState(true);
   const [errorReportingEnabled, setErrorReportingEnabled] = useState(true);
   const [errorReportingSaving, setErrorReportingSaving] = useState(false);
   const [opencodeAppPath, setOpencodeAppPath] = useState('');
@@ -870,6 +872,7 @@ export function SettingsPage() {
           startupMinimized,
           floatingCardAlwaysOnTop,
           appAutoLaunchEnabled,
+          tokenKeeperEnabled,
           opencodeAppPath,
           antigravityAppPath,
           codexAppPath,
@@ -996,6 +999,7 @@ export function SettingsPage() {
     startupMinimized,
     floatingCardAlwaysOnTop,
     appAutoLaunchEnabled,
+    tokenKeeperEnabled,
     generalLoaded,
     language,
     defaultTerminal,
@@ -1296,6 +1300,7 @@ export function SettingsPage() {
       setStartupMinimized(config.startup_minimized ?? false);
       setFloatingCardAlwaysOnTop(config.floating_card_always_on_top ?? false);
       setAppAutoLaunchEnabled(config.app_auto_launch_enabled ?? false);
+      setTokenKeeperEnabled(config.token_keeper_enabled ?? true);
       setOpencodeAppPath(config.opencode_app_path || '');
       setAntigravityAppPath(config.antigravity_app_path || '');
       setCodexAppPath(config.codex_app_path || '');
@@ -2707,6 +2712,30 @@ export function SettingsPage() {
               <div className="settings-row">
                 <div className="row-label">
                   <div className="row-title">
+                    {t('settings.general.tokenKeeper', '后台授权保活')}
+                  </div>
+                  <div className="row-desc">
+                    {t(
+                      'settings.general.tokenKeeperDesc',
+                      '仅在授权快过期时分批刷新账号 Token，降低大量账号场景下的后台请求压力。',
+                    )}
+                  </div>
+                </div>
+                <div className="row-control">
+                  <label className="switch">
+                    <input
+                      type="checkbox"
+                      checked={tokenKeeperEnabled}
+                      onChange={(e) => setTokenKeeperEnabled(e.target.checked)}
+                    />
+                    <span className="slider"></span>
+                  </label>
+                </div>
+              </div>
+
+              <div className="settings-row">
+                <div className="row-label">
+                  <div className="row-title">
                     {t('settings.general.errorReporting', '遥测诊断')}
                   </div>
                   <div className="row-desc">
@@ -2873,13 +2902,13 @@ export function SettingsPage() {
                   <div className="row-title">
                     {t(
                       'settings.general.antigravityLaunchOnSwitch',
-                      '切换时启动 Antigravity IDE',
+                      '切换时启动 Antigravity',
                     )}
                   </div>
                   <div className="row-desc">
                     {t(
                       'settings.general.antigravityLaunchOnSwitchDesc',
-                      '关闭后切号只写入 Antigravity IDE 默认账号数据，不会关闭、启动或重启应用。',
+                      '关闭后切号只写入 Antigravity 默认账号数据，不会关闭、启动或重启应用。',
                     )}
                   </div>
                 </div>
