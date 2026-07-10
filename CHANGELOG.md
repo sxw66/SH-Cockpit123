@@ -7,6 +7,14 @@ All notable changes to Cockpit Tools will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
+## [1.1.4] - 2026-07-10
+
+### Changed
+
+- **Expanded Codex 5.6 model catalog compatibility**: official-client and API Service model responses now preserve the display names, ordering, default and supported reasoning levels, Ultra capability, and priority service tier metadata for `gpt-5.6-sol`, `gpt-5.6-terra`, and `gpt-5.6-luna`.
+- **Improved Codex API Service streaming compatibility through proxies**: requests to `chatgpt.com` now use the standard Go HTTP transport instead of the custom uTLS HTTP/2 connection that could produce `tls: bad record MAC`; Anthropic continues to use its existing uTLS transport.
+
+---
 ## [1.1.3] - 2026-07-10
 
 ### Added

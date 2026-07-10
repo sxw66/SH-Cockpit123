@@ -7,6 +7,14 @@
 格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)。
 
 ---
+## [1.1.4] - 2026-07-10
+
+### 变更
+
+- **完善 Codex 5.6 模型目录兼容**：官方客户端和 API 服务的模型响应会为 `gpt-5.6-sol`、`gpt-5.6-terra` 和 `gpt-5.6-luna` 保留显示名称、排序、默认及支持的推理强度、Ultra 能力和 priority 服务层级元数据。
+- **提升 Codex API 服务经过代理时的流式请求兼容性**：访问 `chatgpt.com` 时改用标准 Go HTTP Transport，避免自定义 uTLS HTTP/2 连接可能触发的 `tls: bad record MAC`；Anthropic 继续保持原有 uTLS Transport。
+
+---
 ## [1.1.3] - 2026-07-10
 
 ### 新增
