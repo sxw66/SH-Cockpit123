@@ -7,6 +7,13 @@ All notable changes to Cockpit Tools will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
+## [1.1.2] - 2026-07-10
+
+### Added
+
+- **Added support for the official Codex client renamed to ChatGPT**: launch-path detection, Store/Appx discovery, process scanning, window focus, and app-server resolution now recognize both ChatGPT and legacy Codex clients on Windows and macOS.
+
+---
 ## [1.1.1] - 2026-07-08
 
 ### Changed

@@ -7,6 +7,13 @@
 格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)。
 
 ---
+## [1.1.2] - 2026-07-10
+
+### 新增
+
+- **新增对官方 Codex 客户端改名为 ChatGPT 后的兼容支持**：Windows 和 macOS 的启动路径检测、Store/Appx 发现、进程扫描、窗口定位和 app-server 解析现在同时兼容 ChatGPT 与旧 Codex 客户端。
+
+---
 ## [1.1.1] - 2026-07-08
 
 ### 变更
