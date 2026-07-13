@@ -351,3 +351,36 @@ Local installation verification:
 - Unauthenticated `GET /v1/models`: HTTP `401`, confirming the restarted
   service is reachable and enforcing authentication without recording a
   client API Key in the verification log.
+
+## Upstream 1.3.0 Sync
+
+Sync started on 2026-07-13:
+
+- Fetched official `origin/main` at `a015fcd3` and release tag `v1.3.0` at
+  `da0deca4`.
+- Created rollback reference
+  `backup/pre-origin-main-1.3.0-sync-20260713-095845` before merging.
+- Adopted upstream version `1.3.0` in `package.json`, `package-lock.json`,
+  `src-tauri/Cargo.toml`, `src-tauri/tauri.conf.json`, and `Cargo.lock`.
+- Resolved conflicts in both changelogs, version metadata, the API Service
+  page, and `codex_local_access.rs`.
+- Preserved per-Key account scopes, inherited empty scopes, sidecar account
+  filtering, Key-scoped affinity, Key usage statistics, and local calendar
+  day/week/month boundaries. Upstream request-log display names, custom-route
+  backup accounts, and upstream Base URL recovery were retained too.
+
+Verification before packaging:
+
+- `npm run typecheck`: passed.
+- `npm run test:codex-api-key-scope`: 5 passed.
+- `node --test src/utils/codexApiServiceCompatibility.test.ts`: 2 passed.
+- `api_key_usage_stats_are_isolated_by_time_window`: 1 passed.
+- `custom_api_key_scope_filters_duplicates_and_updates_manifest_scope`: 1
+  passed.
+- `cargo fmt --check` under the current local Rust toolchain reports
+  formatting differences in pre-existing upstream 1.3.0 files. It did not
+  modify sources and is not treated as a functional test failure.
+
+The 1.3.0 local package must reuse the checked-in sidecar binary because Go is
+not installed. Record its installer names, checksums, installation result, and
+runtime port check here after packaging; do not include credentials.
