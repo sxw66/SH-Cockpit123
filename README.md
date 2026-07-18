@@ -1,11 +1,11 @@
-# Cockpit Tools
+# CockpitV2 Tools
 
 [English](README.en.md) · [Portuguese (BR)](README.pt-br.md) · 简体中文
 
-[![GitHub stars](https://img.shields.io/github/stars/jlcodes99/cockpit-tools?style=flat&color=gold)](https://github.com/jlcodes99/cockpit-tools)
-[![GitHub downloads](https://img.shields.io/github/downloads/jlcodes99/cockpit-tools/total?style=flat&color=blue)](https://github.com/jlcodes99/cockpit-tools/releases)
-[![GitHub release](https://img.shields.io/github/v/release/jlcodes99/cockpit-tools?style=flat)](https://github.com/jlcodes99/cockpit-tools/releases)
-[![GitHub issues](https://img.shields.io/github/issues/jlcodes99/cockpit-tools)](https://github.com/jlcodes99/cockpit-tools/issues)
+[![GitHub stars](https://img.shields.io/github/stars/sxw66/SH-Cockpit123?style=flat&color=gold)](https://github.com/sxw66/SH-Cockpit123)
+[![GitHub downloads](https://img.shields.io/github/downloads/sxw66/SH-Cockpit123/total?style=flat&color=blue)](https://github.com/sxw66/SH-Cockpit123/releases)
+[![GitHub release](https://img.shields.io/github/v/release/sxw66/SH-Cockpit123?style=flat)](https://github.com/sxw66/SH-Cockpit123/releases)
+[![GitHub issues](https://img.shields.io/github/issues/sxw66/SH-Cockpit123)](https://github.com/sxw66/SH-Cockpit123/issues)
 
 一款**通用的 AI IDE 账号管理工具**，目前支持 **Antigravity IDE**、**Codex**、**GitHub Copilot**、**Windsurf**、**Kiro**、**Cursor**、**Grok CLI**、**CodeBuddy**、**CodeBuddy CN**、**Qoder**、**Trae**、**TRAE SOLO**、**Trae CN**、**TRAE SOLO CN**、**Zed** 和 **ZCode**，并支持多账号多实例并行运行。
 
@@ -22,30 +22,13 @@
 
 ---
 
-## 赞助商
+## 卡网商店
 
-<table>
-  <tr>
-    <td width="120" align="center">
-      <a href="https://apikey.fun/register?aff=COCKPIT">
-        <img src="src/assets/icons/apikey-fun.png" alt="APIKEY.FUN" width="72" />
-      </a>
-    </td>
-    <td>
-      <a href="https://apikey.fun/register?aff=COCKPIT"><strong>APIKEY.FUN</strong></a> 是一家专业的企业级 AI 中转站，致力于为企业和个人开发者提供稳定、高效、低成本的 AI 模型 API 接入服务。平台支持 Claude、OpenAI、Gemini 等主流热门模型，价格低至官方原价的 7%。通过本项目 <a href="https://apikey.fun/register?aff=COCKPIT"><strong>专属链接</strong></a> 注册，还可享受最高 <strong>充值永久 95 折</strong> 专属优惠。
-    </td>
-  </tr>
-  <tr>
-    <td width="120" align="center">
-      <a href="https://roxybrowser.cn?code=0326VTDA">
-        <img src="src/assets/icons/roxybrowser.jpg" alt="RoxyBrowser" width="96" />
-      </a>
-    </td>
-    <td>
-      <a href="https://roxybrowser.cn?code=0326VTDA"><strong>RoxyBrowser（Roxy浏览器）</strong></a> 是面向多账号运营与 AI 自动化场景的指纹浏览器，支持独立浏览器指纹环境、Cookie / 存储隔离、Roxy 原生住宅 IP、团队协作与 API / MCP 自动化能力，适合需要管理 AI 账号矩阵、降低账号关联风险、提升长期使用稳定性的用户。通过 Cockpit <a href="https://roxybrowser.cn?code=0326VTDA"><strong>邀请链接</strong></a> 注册或购买，可享受 10% 粉丝折扣。
-    </td>
-  </tr>
-</table>
+<a href="https://pay.ldxp.cn/shop/521">
+  <img src="docs/images/card-shop-banner.png" alt="CockpitV2 Tools 卡网商店" width="720" />
+</a>
+
+前往 [卡网商店](https://pay.ldxp.cn/shop/521) 购买或了解更多。
 
 ---
 
@@ -344,7 +327,7 @@ Grok CLI 默认实例直接沿用官方 `~/.grok` 目录，启动时不设置 `G
 
 ### 选项 A: 手动下载 (推荐)
 
-前往 [GitHub Releases](https://github.com/jlcodes99/cockpit-tools/releases) 下载对应系统的安装包：
+前往 [GitHub Releases](https://github.com/sxw66/SH-Cockpit123/releases) 下载对应系统的安装包：
 
 *   **macOS**: `.dmg` (Apple Silicon & Intel)
 *   **Windows**: `.msi` (推荐) 或 `.exe`
@@ -355,7 +338,7 @@ Grok CLI 默认实例直接沿用官方 `~/.grok` 目录，启动时不设置 `G
 > 需要先安装 Homebrew。
 
 ```bash
-brew tap jlcodes99/cockpit-tools https://github.com/jlcodes99/cockpit-tools
+brew tap sxw66/SH-Cockpit123 https://github.com/sxw66/SH-Cockpit123
 brew install --cask cockpit-tools
 ```
 
@@ -365,10 +348,10 @@ brew install --cask cockpit-tools
 brew install --cask --no-quarantine cockpit-tools
 ```
 
-如果提示已存在应用（例如：`already an App at '/Applications/Cockpit Tools.app'`），请先删除旧版本再安装：
+如果提示已存在应用（例如：`already an App at '/Applications/CockpitV2 Tools.app'`），请先删除旧版本再安装：
 
 ```bash
-rm -rf "/Applications/Cockpit Tools.app"
+rm -rf "/Applications/CockpitV2 Tools.app"
 brew install --cask cockpit-tools
 ```
 
@@ -386,7 +369,7 @@ brew install --cask --force cockpit-tools
 1.  **命令行修复** (推荐):
     打开终端，执行以下命令：
     ```bash
-    sudo xattr -rd com.apple.quarantine "/Applications/Cockpit Tools.app"
+    sudo xattr -rd com.apple.quarantine "/Applications/CockpitV2 Tools.app"
     ```
     > **注意**: 如果您修改了应用名称，请在命令中相应调整路径。
 
@@ -424,25 +407,26 @@ npm run tauri build
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=jlcodes99/cockpit-tools&type=Date)](https://star-history.com/#jlcodes99/cockpit-tools&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=sxw66/SH-Cockpit123&type=Date)](https://star-history.com/#sxw66/SH-Cockpit123&Date)
 
 ---
 
 ## 💬 交流群
 
-QQ 交流群、微信群或新建的 Telegram 畅聊群都可以加入。
+如有问题或建议，可通过以下方式联系作者：
 
-新建 Telegram 畅聊群：[点击加入](https://t.me/+Y8gMv4SlZUU2MWY1)
-
-| QQ 群 | 微信（个人） |
-| :---: | :---: |
-| <img src="docs/images/qq_group_20260404_183718.png" width="200" /> | <img src="docs/images/wechat_info.jpg" width="200" /> |
+- **QQ**：1748931836
+- **GitHub Issues**：[提交反馈](https://github.com/sxw66/SH-Cockpit123/issues)
 
 ---
 
 ## ☕ 赞助项目
 
-如果不介意，请 [☕ 赞赏支持一下](docs/DONATE.md)
+如果不介意，欢迎扫码赞赏支持项目持续开发与维护：
+
+<p align="center">
+  <img src="docs/images/alipay.png" alt="支付宝收款码" width="280" />
+</p>
 
 您的每一份支持都是对开源项目最大的鼓励！无论金额大小，都代表着您对这个项目的认可。
 

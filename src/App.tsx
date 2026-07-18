@@ -20,6 +20,7 @@ import { SideNav } from './components/layout/SideNav';
 import { GlobalModal } from './components/GlobalModal';
 import { AnnouncementHost } from './components/AnnouncementCenter';
 import { TopCenterPromoBanner } from './components/TopCenterPromoBanner';
+import { AuthorPromoBar } from './components/AuthorPromoBar';
 import type { QuickSettingsType } from './components/QuickSettingsPopover';
 import { isMainWindowNavigablePage, type Page } from './types/navigation';
 import type { TopRightAd } from './types/topRightAd';
@@ -3920,6 +3921,8 @@ function MainApp() {
         data-tauri-drag-region
         onMouseDown={handleDragStart}
       />
+
+      <AuthorPromoBar />
 
       {/* 左侧悬浮导航 */}
       <SideNav

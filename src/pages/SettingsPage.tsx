@@ -90,10 +90,12 @@ import { useEscClose } from '../hooks/useEscClose';
 import './settings/Settings.css';
 import { 
   Github, User, Rocket, Save, FolderOpen,
-  AlertCircle, RefreshCw, Heart, MessageSquare, FileText, Download, X
+  AlertCircle, RefreshCw, Heart, MessageSquare, FileText, Download, X, ShoppingBag, ExternalLink
 } from 'lucide-react';
+import qqQrCode from '../assets/images/author-qq-qrcode.png';
 
-
+const AUTHOR_SHOP_URL = 'https://pay.ldxp.cn/shop/521';
+const AUTHOR_QQ_NUMBER = '1748931836';
 
 /** 网络配置类型 */
 interface NetworkConfig {
@@ -7453,29 +7455,53 @@ export function SettingsPage() {
             </div>
 
             <div className="credits-list">
-              <button className="credit-item" onClick={() => openLink('https://github.com/jlcodes99')}>
+              <button className="credit-item" onClick={() => openLink('https://github.com/sxw66')}>
                 <div className="credit-icon"><User size={24} /></div>
                 <h3>{t('settings.about.author')}</h3>
-                <p>jlcodes99</p>
+                <p>sxw66</p>
               </button>
               
               
-              <button className="credit-item" onClick={() => openLink('https://github.com/jlcodes99/cockpit-tools')}>
+              <button className="credit-item" onClick={() => openLink('https://github.com/sxw66/SH-Cockpit123')}>
                 <div className="credit-icon" style={{ color: '#0f172a' }}><Github size={24} /></div>
                 <h3>{t('settings.about.github')}</h3>
-                <p>cockpit-tools</p>
+                <p>SH-Cockpit123</p>
               </button>
 
-              <button className="credit-item" onClick={() => openLink('https://github.com/jlcodes99/cockpit-tools/blob/main/docs/DONATE.md')}>
+              <button className="credit-item" onClick={() => openLink('https://github.com/sxw66/SH-Cockpit123/blob/main/docs/DONATE.md')}>
                 <div className="credit-icon" style={{ color: '#ef4444' }}><Heart size={24} /></div>
                 <h3>{t('settings.about.sponsor')}</h3>
                 <p>{t('settings.about.sponsorDesc', 'Donate')}</p>
               </button>
 
-              <button className="credit-item" onClick={() => openLink('https://github.com/jlcodes99/cockpit-tools/issues')}>
+              <button className="credit-item" onClick={() => openLink('https://github.com/sxw66/SH-Cockpit123/issues')}>
                 <div className="credit-icon" style={{ color: '#3b82f6' }}><MessageSquare size={24} /></div>
                 <h3>{t('settings.about.feedback', '意见反馈')}</h3>
                 <p>{t('settings.about.feedbackDesc', 'Issues')}</p>
+              </button>
+            </div>
+
+            <div className="author-contact-panel">
+              <div className="author-contact-qr-wrap">
+                <img
+                  src={qqQrCode}
+                  alt={`QQ 二维码 ${AUTHOR_QQ_NUMBER}`}
+                  className="author-contact-qr"
+                />
+                <div className="author-contact-meta">
+                  <h3>{t('settings.about.contactAuthor', '联系作者')}</h3>
+                  <p>{t('settings.about.qqHint', '扫一扫，加我为好友')}</p>
+                  <p className="author-contact-qq">QQ：{AUTHOR_QQ_NUMBER}</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                className="author-contact-shop-btn"
+                onClick={() => openLink(AUTHOR_SHOP_URL)}
+              >
+                <ShoppingBag size={16} />
+                <span>{t('settings.about.shopLink', '官方卡网 · 点击进入选购')}</span>
+                <ExternalLink size={14} />
               </button>
             </div>
           </div>

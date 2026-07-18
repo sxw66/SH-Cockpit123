@@ -226,7 +226,7 @@
       "loginSuccess": "Login successful",
       "switchAccount": "Switch Account"
     },
-    "appName": "Cockpit Tools",
+    "appName": "CockpitV2 Tools",
     "collapse": "Collapse",
     "confirmDelete": "Confirm Delete",
     "confirmDeleteTag": "Confirm Tag Deletion",
@@ -258,7 +258,7 @@
       "backToCurrent": "Back",
       "switchToThisAccount": "Switch",
       "openDetails": "Open details",
-      "openCockpitTools": "Open Cockpit Tools"
+      "openCockpitTools": "Open CockpitV2 Tools"
     },
     "empty": {
       "title": "No accounts",
@@ -1180,7 +1180,7 @@
       "proxyUrlRequired": "Proxy URL cannot be empty when global proxy is enabled."
     },
     "about": {
-      "appName": "Cockpit Tools",
+      "appName": "CockpitV2 Tools",
       "slogan": "Professional Account Solution",
       "author": "Author",
       "wechat": "WeChat",
@@ -2042,7 +2042,7 @@
     },
     "exportFormat": {
       "label": "Export Format",
-      "cockpitTools": "Cockpit Tools",
+      "cockpitTools": "CockpitV2 Tools",
       "sub2api": "sub2api",
       "cpa": "cpa",
       "downloadAll": "Download All",
