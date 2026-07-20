@@ -133,10 +133,9 @@ jobs:
           cp previous-release/latest.json legacy-latest.json
           echo "Preserved legacy latest.json from ${PREVIOUS_TAG}"
 
-      # Publish the release early (with previous complete latest.json) so parallel
-      # platform jobs can verify assets via public tag download URLs without
-      # waiting for Windows, and without reading the previous release's
-      # same-named target manifests through /releases/latest/.
+      # Keep the release as a draft until every platform asset (and checksums)
+      # has been uploaded. Publishing early breaks repositories with GitHub
+      # Immutable Releases enabled, because assets can no longer be added.
       - name: Create or update staged release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -147,6 +146,7 @@ jobs:
           TITLE="CockpitV2 Tools v${{ steps.app_version.outputs.VERSION }}"
           if gh release view "${TAG}" > /dev/null 2>&1; then
             gh release edit "${TAG}" \
+              --draft \
               --title "${TITLE}" \
               --notes-file release-notes.md
           else
@@ -156,17 +156,9 @@ jobs:
               --notes-file release-notes.md
           fi
 
-          IS_DRAFT="$(gh release view "${TAG}" --json isDraft --jq '.isDraft')"
-          if [ "${IS_DRAFT}" = "true" ]; then
-            cp legacy-latest.json latest.json
-            gh release upload "${TAG}" latest.json --clobber
-            gh release edit "${TAG}" --draft=false --prerelease=false --latest
-            echo "Published staged release ${TAG} with legacy latest.json"
-          else
-            # Re-run after a prior publish: do not clobber a finalized latest.json.
-            echo "Release ${TAG} is already published; leaving latest.json as-is"
-            gh release edit "${TAG}" --prerelease=false --latest
-          fi
+          cp legacy-latest.json latest.json
+          gh release upload "${TAG}" latest.json --clobber
+          echo "Prepared draft release ${TAG} with legacy latest.json (not published yet)"
 
       - name: Upload release metadata artifact
         uses: actions/upload-artifact@v4
@@ -267,36 +259,18 @@ jobs:
             --output-dir "target-manifests"
           gh release upload "v${VERSION}" target-manifests/*.json --clobber
 
-      # Fallback only: prepare should already have published with legacy latest.json.
-      - name: Ensure staged release is published
+      # Draft releases are not publicly downloadable; confirm assets via the API.
+      - name: Verify Windows updater manifests on draft release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: bash
         run: |
           set -euo pipefail
           TAG="v${VERSION}"
-          IS_DRAFT="$(gh release view "${TAG}" --json isDraft --jq '.isDraft')"
-          if [ "${IS_DRAFT}" = "true" ]; then
-            cp release-metadata/legacy-latest.json latest.json
-            gh release upload "${TAG}" latest.json --clobber
-            gh release edit "${TAG}" --draft=false --prerelease=false --latest
-            echo "Published staged release from Windows fallback with legacy latest.json"
-          else
-            echo "Release is already published; keeping its current latest.json"
-          fi
-
-      # Mid-stage verify uses the tag download URL so parallel jobs do not race
-      # on /releases/latest/ before this release is marked latest (or before
-      # other platforms finish). Public /latest/ is checked in finalize.
-      - name: Verify published Windows updater manifests
-        shell: bash
-        run: |
-          set -euo pipefail
-          node scripts/release/verify_published_updater_manifests.cjs \
-            --version "${VERSION}" \
-            --repo "${GITHUB_REPOSITORY}" \
-            --targets "windows-x86_64-msi,windows-x86_64-nsis" \
-            --latest-base-url "https://github.com/${GITHUB_REPOSITORY}/releases/download/v${VERSION}"
+          ASSETS="$(gh release view "${TAG}" --json assets --jq '[.assets[].name] | join("\n")')"
+          echo "${ASSETS}"
+          echo "${ASSETS}" | grep -Fxq "latest-windows-x86_64-msi.json"
+          echo "${ASSETS}" | grep -Fxq "latest-windows-x86_64-nsis.json"
 
   build-macos-aarch64:
     name: Build macOS Apple Silicon
@@ -391,16 +365,16 @@ jobs:
             --output-dir "target-manifests"
           gh release upload "v${VERSION}" target-manifests/*.json --clobber
 
-      # Tag URL (not /releases/latest/) — see Windows verify comment.
-      - name: Verify published macOS Apple Silicon updater manifest
+      - name: Verify macOS Apple Silicon updater manifest on draft release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: bash
         run: |
           set -euo pipefail
-          node scripts/release/verify_published_updater_manifests.cjs \
-            --version "${VERSION}" \
-            --repo "${GITHUB_REPOSITORY}" \
-            --targets "darwin-aarch64-app" \
-            --latest-base-url "https://github.com/${GITHUB_REPOSITORY}/releases/download/v${VERSION}"
+          TAG="v${VERSION}"
+          ASSETS="$(gh release view "${TAG}" --json assets --jq '[.assets[].name] | join("\n")')"
+          echo "${ASSETS}"
+          echo "${ASSETS}" | grep -Fxq "latest-darwin-aarch64-app.json"
 
   build-macos-x86_64:
     name: Build macOS Intel
@@ -495,16 +469,16 @@ jobs:
             --output-dir "target-manifests"
           gh release upload "v${VERSION}" target-manifests/*.json --clobber
 
-      # Tag URL (not /releases/latest/) — see Windows verify comment.
-      - name: Verify published macOS Intel updater manifest
+      - name: Verify macOS Intel updater manifest on draft release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: bash
         run: |
           set -euo pipefail
-          node scripts/release/verify_published_updater_manifests.cjs \
-            --version "${VERSION}" \
-            --repo "${GITHUB_REPOSITORY}" \
-            --targets "darwin-x86_64-app" \
-            --latest-base-url "https://github.com/${GITHUB_REPOSITORY}/releases/download/v${VERSION}"
+          TAG="v${VERSION}"
+          ASSETS="$(gh release view "${TAG}" --json assets --jq '[.assets[].name] | join("\n")')"
+          echo "${ASSETS}"
+          echo "${ASSETS}" | grep -Fxq "latest-darwin-x86_64-app.json"
 
   build-macos-universal:
     name: Build macOS Universal
@@ -685,16 +659,19 @@ jobs:
             --output-dir "target-manifests"
           gh release upload "v${VERSION}" target-manifests/*.json --clobber
 
-      # Tag URL (not /releases/latest/) — see Windows verify comment.
-      - name: Verify published Linux updater manifests
+      - name: Verify Linux updater manifests on draft release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: bash
         run: |
           set -euo pipefail
-          node scripts/release/verify_published_updater_manifests.cjs \
-            --version "${VERSION}" \
-            --repo "${GITHUB_REPOSITORY}" \
-            --targets "${{ matrix.targets }}" \
-            --latest-base-url "https://github.com/${GITHUB_REPOSITORY}/releases/download/v${VERSION}"
+          TAG="v${VERSION}"
+          ASSETS="$(gh release view "${TAG}" --json assets --jq '[.assets[].name] | join("\n")')"
+          echo "${ASSETS}"
+          IFS=',' read -r -a TARGETS <<< "${{ matrix.targets }}"
+          for target in "${TARGETS[@]}"; do
+            echo "${ASSETS}" | grep -Fxq "latest-${target}.json"
+          done
 
   finalize-legacy-latest:
     name: Finalize legacy latest.json
@@ -777,25 +754,14 @@ jobs:
           ' latest.json > /dev/null
           jq -r '.platforms | keys[]' latest.json
 
-      - name: Publish complete legacy latest.json
+      - name: Upload complete legacy latest.json to draft release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: bash
         run: |
           set -euo pipefail
           gh release upload "v${VERSION}" latest.json --clobber
-          gh release edit "v${VERSION}" --draft=false --prerelease=false --latest
-
-      # End-to-end: user-facing /releases/latest/download (do not use tag URL here).
-      - name: Verify complete published updater state
-        shell: bash
-        run: |
-          set -euo pipefail
-          node scripts/release/verify_published_updater_manifests.cjs \
-            --version "${VERSION}" \
-            --repo "${GITHUB_REPOSITORY}" \
-            --targets "darwin-aarch64-app,darwin-x86_64-app,windows-x86_64-msi,windows-x86_64-nsis,linux-x86_64-appimage,linux-x86_64-deb,linux-x86_64-rpm,linux-aarch64-appimage,linux-aarch64-deb,linux-aarch64-rpm" \
-            --legacy
+          echo "Uploaded complete latest.json to draft release v${VERSION}"
 
   upload-checksums:
     name: Upload SHA256SUMS
@@ -835,7 +801,7 @@ jobs:
           test -s SHA256SUMS.txt
           cat SHA256SUMS.txt
 
-      - name: Upload SHA256SUMS.txt to release
+      - name: Upload SHA256SUMS.txt to draft release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: bash
@@ -843,12 +809,51 @@ jobs:
           set -euo pipefail
           gh release upload "v${VERSION}" SHA256SUMS.txt --clobber
 
-  update-homebrew-cask:
-    name: Update Homebrew Cask
+  publish-release:
+    name: Publish release as latest
     needs:
       - prepare-release
       - finalize-legacy-latest
       - upload-checksums
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      GH_REPO: ${{ github.repository }}
+      VERSION: ${{ needs.prepare-release.outputs.version }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Node.js setup
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Publish draft release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh release edit "v${VERSION}" --draft=false --prerelease=false --latest
+          echo "Published immutable-safe release v${VERSION}"
+
+      - name: Verify complete published updater state
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/release/verify_published_updater_manifests.cjs \
+            --version "${VERSION}" \
+            --repo "${GITHUB_REPOSITORY}" \
+            --targets "darwin-aarch64-app,darwin-x86_64-app,windows-x86_64-msi,windows-x86_64-nsis,linux-x86_64-appimage,linux-x86_64-deb,linux-x86_64-rpm,linux-aarch64-appimage,linux-aarch64-deb,linux-aarch64-rpm" \
+            --legacy
+
+  update-homebrew-cask:
+    name: Update Homebrew Cask
+    needs:
+      - prepare-release
+      - publish-release
     runs-on: ubuntu-latest
     permissions:
       contents: write
